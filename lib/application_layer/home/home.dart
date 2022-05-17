@@ -165,19 +165,39 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             } else if (state is FetchPublicApisFailed) {
               return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.errorMessage),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  ElevatedButton(
-                      onPressed: () => context
-                          .read<FetchPublicApisCubit>()
-                          .fetchPublicApis(),
-                      child: const Text('Try Again'))
-                ],
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(9),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                              width: 1, color: const Color(0xff48319D))),
+                      child: Text(
+                        state.errorMessage,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    ElevatedButton(
+                        onPressed: () => context
+                            .read<FetchPublicApisCubit>()
+                            .fetchPublicApis(),
+                        child: const Text(
+                          'Try Again',
+                        ))
+                  ],
+                ),
               ));
             }
             return const SizedBox.shrink();

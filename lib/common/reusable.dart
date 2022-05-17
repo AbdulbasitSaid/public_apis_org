@@ -19,7 +19,7 @@ String getErrorMessage(AppErrorType appErrorType) {
     case AppErrorType.serverNotAvailble:
       return 'Server not available at the moment please try again!! later';
     case AppErrorType.unExpected:
-      return 'Unexpected error.';
+      return 'Opps Unexpected error!!';
     default:
       return 'Opps something went wrong pleas try again';
   }
