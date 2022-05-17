@@ -57,15 +57,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          .4,
-                                      child: Text(
-                                        '${publicApis[index].api}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                      width: double.infinity,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                            child: Text(
+                                              '${publicApis[index].api}',
+                                              style: const TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                                color: Colors.white,
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     const SizedBox(
@@ -91,12 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                               child: Text(
                                                 'view details'.toUpperCase(),
                                               )),
-                                          Text(
-                                            '${publicApis[index].category}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
+                                          const Expanded(child: SizedBox()),
+                                          Expanded(
+                                            child: Text(
+                                              '${publicApis[index].category}',
+                                              style: const TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
                                         ]),
