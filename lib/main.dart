@@ -16,10 +16,7 @@ void main() async {
   unawaited(get_it.init());
   BlocOverrides.runZoned(
       () => runApp(
-            BlocProvider(
-              create: (context) => FetchPublicApisCubit(getItInstance()),
-              child: const MyApp(),
-            ),
+            const MyApp(),
           ),
       blocObserver: SimpleBlocObserver());
 }
@@ -42,7 +39,10 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
           )),
-      home: const HomeScreen(),
+      home: BlocProvider(
+        create: (context) => FetchPublicApisCubit(getItInstance()),
+        child: const HomeScreen(),
+      ),
     );
   }
 }

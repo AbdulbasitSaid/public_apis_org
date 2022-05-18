@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:public_apis_org/application_layer/widgets/icons/display_icon.dart';
 import 'package:public_apis_org/data_layer/models/entries_model.dart';
 
 class ApiDetailScreen extends StatelessWidget {
@@ -89,29 +90,11 @@ class ApiDetailScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       entryModel.https == true
-                          ? const Icon(
-                              Icons.lock,
-                              size: 150,
-                              color: Colors.white,
-                              shadows: [
-                                BoxShadow(
-                                    spreadRadius: 8,
-                                    color: Color(0xff2C3055),
-                                    blurRadius: 4,
-                                    offset: Offset(2, 4))
-                              ],
+                          ? const AppDisplayIcon(
+                              icon: Icons.lock,
                             )
-                          : const Icon(
-                              Icons.lock_open_rounded,
-                              size: 150,
-                              color: Colors.white,
-                              shadows: [
-                                BoxShadow(
-                                    spreadRadius: 8,
-                                    color: Color(0xff2C3055),
-                                    blurRadius: 4,
-                                    offset: Offset(2, 4))
-                              ],
+                          : const AppDisplayIcon(
+                              icon: Icons.lock_open_rounded,
                             ),
                       Text(
                         'HTTPS: ${entryModel.https}',
@@ -160,7 +143,6 @@ class ApiDetailScreen extends StatelessWidget {
                       const SizedBox(
                         height: 16,
                       ),
-                      
                       Text(
                         '${entryModel.link}',
                         style: const TextStyle(
