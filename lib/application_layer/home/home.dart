@@ -4,6 +4,8 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:public_apis_org/application_layer/home/api_detail_screen.dart';
 import 'package:public_apis_org/application_layer/home/cubit/fetch_public_apis_cubit.dart';
 
+import '../widgets/icons/display_icon.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -12,10 +14,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scrollController = ScrollController();
   @override
   void initState() {
     context.read<FetchPublicApisCubit>().fetchPublicApis();
     super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,129 +48,120 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             if (state is FetchPublicApisSuccess) {
               final publicApis = state.publicApiModel.entries;
-              return ListView.separated(
-                itemCount: state.publicApiModel.count,
-                itemBuilder: ((context, index) => Container(
-                      padding: const EdgeInsets.all(24),
-                      height: MediaQuery.of(context).size.height * .3,
-                      clipBehavior: Clip.antiAlias,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(),
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * .2,
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                  gradient: const LinearGradient(colors: [
-                                    Color(0xff5936B4),
-                                    Color(0xff362A84),
-                                  ]),
-                                  borderRadius: BorderRadius.circular(24)),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .4,
-                                            child: Text(
-                                              '${publicApis[index].api}',
-                                              style: const TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.white,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (builder) =>
-                                                            ApiDetailScreen(
-                                                                entryModel:
-                                                                    publicApis[
-                                                                        index])));
-                                              },
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<FetchPublicApisCubit>().fetchPublicApis();
+                },
+                child: ListView.separated(
+                  itemCount: state.publicApiModel.count,
+                  itemBuilder: ((context, index) => Container(
+                        padding: const EdgeInsets.all(24),
+                        height: MediaQuery.of(context).size.height * .3,
+                        clipBehavior: Clip.antiAlias,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * .2,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                    gradient: const LinearGradient(colors: [
+                                      Color(0xff5936B4),
+                                      Color(0xff362A84),
+                                    ]),
+                                    borderRadius: BorderRadius.circular(24)),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .4,
                                               child: Text(
-                                                'view details'.toUpperCase(),
-                                              )),
-                                          const Expanded(child: SizedBox()),
-                                          Expanded(
-                                            child: Text(
-                                              '${publicApis[index].category}',
-                                              style: const TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
+                                                '${publicApis[index].api}',
+                                                style: const TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.white,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ]),
-                                  ]),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (builder) =>
+                                                              ApiDetailScreen(
+                                                                  entryModel:
+                                                                      publicApis[
+                                                                          index])));
+                                                },
+                                                child: Text(
+                                                  'view details'.toUpperCase(),
+                                                )),
+                                            const Expanded(child: SizedBox()),
+                                            Expanded(
+                                              child: Text(
+                                                '${publicApis[index].category}',
+                                                style: const TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ),
+                                          ]),
+                                    ]),
+                              ),
                             ),
-                          ),
-                          Positioned(
+                            Positioned(
                               top: 0,
                               right: -10,
                               child: publicApis[index].https == true
-                                  ? const Icon(
-                                      Icons.lock,
-                                      size: 150,
-                                      color: Colors.white,
-                                      shadows: [
-                                        BoxShadow(
-                                            spreadRadius: 8,
-                                            color: Color(0xff2C3055),
-                                            blurRadius: 4,
-                                            offset: Offset(2, 4))
-                                      ],
+                                  ? const AppDisplayIcon(
+                                      icon: Icons.lock,
                                     )
-                                  : const Icon(
-                                      Icons.lock_open,
-                                      size: 150,
-                                      color: Colors.white,
-                                      shadows: [
-                                        BoxShadow(
-                                            spreadRadius: 8,
-                                            color: Color(0xff2C3055),
-                                            blurRadius: 4,
-                                            offset: Offset(2, 4))
-                                      ],
-                                    ))
-                        ],
-                      ),
-                    )),
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(
-                    height: 8,
-                  );
-                },
+                                  : const AppDisplayIcon(
+                                      icon: Icons.lock_open,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(
+                      height: 8,
+                    );
+                  },
+                ),
               );
             } else if (state is FetchPublicApisLoading) {
               return const Center(
@@ -205,5 +214,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<FetchPublicApisCubit>().fetchPublicApis();
+    }
   }
 }
